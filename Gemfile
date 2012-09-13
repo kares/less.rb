@@ -2,6 +2,5 @@ source :rubygems
 
 gemspec
 
-
 gem "therubyracer", "~> 0.10.0", :require => nil, :platforms => :ruby
-gem "therubyrhino", "~> 1.73.3", :require => nil, :platforms => :jruby
+gem "therubyrhino", ">= 2.0.1",  :require => nil, :platforms => :jruby

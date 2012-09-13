@@ -13,9 +13,9 @@ module Less
       @context['console'] = Console.new
       path = Pathname(__FILE__).dirname.join('js', 'lib')
       @environment = CommonJS::Environment.new(@context, :path => path.to_s)
-      @environment.native('path', Path.new)
-      @environment.native('util', Sys.new)
-      @environment.native('fs', Fs.new)
+      @environment.native('path', Path)
+      @environment.native('util', Util)
+      @environment.native('fs', FS)
     end
     
     def require(module_id)
@@ -24,43 +24,48 @@ module Less
     
     # stubbed JS modules required by less.js
     
-    class Path
-      def join(*components)
+    module Path
+      def self.join(*components)
         File.join(*components)
       end
 
-      def dirname(path)
+      def self.dirname(path)
         File.dirname(path)
       end
 
-      def basename(path)
+      def self.basename(path)
         File.basename(path)
       end
     end
     
-    class Sys
-      def error(*errors)
+    module Util
+      def self.error(*errors)
         raise errors.join(' ')
+      end
+      
+      def self.puts(*args)
+        args.each { |arg| STDOUT.puts(arg) }
       end
     end
 
-    class Fs
-      def statSync(path)
+    module FS
+      def self.statSync(path)
         File.stat(path)
       end
 
-      def readFile(path, encoding, callback)
+      def self.readFile(path, encoding, callback)
         callback.call(nil, File.read(path))
       end
     end
 
     class Process
       def exit(*args)
+        warn("exit(#{args.first}) from #{caller}")
       end
     end
 
     class Console
-      def self.log(*msgs)
+      def log(*msgs)
         puts msgs.join(', ')
       end
     end
